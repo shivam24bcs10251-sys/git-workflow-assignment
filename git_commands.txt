@@ -1,0 +1,202 @@
+Git Commands Used in This Assignment
+====================================
+Name:       Shivam Jaiswal
+Roll No:    2024eb02446
+Repository: https://github.com/shivam24bcs10251-sys/git-workflow-assignment
+
+Commands are listed in the order I used them. A few plain shell commands
+(cd, ls, echo, mkdir, cat) are included too, since they're part of the
+workflow, and they're marked as shell commands.
+
+
+STEP 1 - LOCAL REPOSITORY SETUP
+-------------------------------
+
+cd my-website
+    (Shell) Moves into the project folder that holds index.html and
+    about.html.
+
+ls -la
+    (Shell) Lists the files in the folder, including hidden ones. Before
+    git init there's no .git folder yet.
+
+git init -b main
+    Turns the current folder into a Git repository. The -b main part names
+    the first branch "main" instead of the older default "master".
+
+git status
+    Shows which files are untracked, modified or staged. Right after init,
+    both HTML files show up as untracked.
+
+
+STEP 2 - GIT WORKFLOW
+---------------------
+
+git add index.html about.html
+    Stages the two files so they go into the next commit.
+
+git commit -m "Initial commit: add index.html and about.html"
+    Saves the staged files as the first snapshot of the project, with a
+    message describing what changed.
+
+git log --oneline
+    Shows the commit history, one line per commit. Used here to confirm the
+    first commit was recorded.
+
+git diff
+    Shows the exact lines I changed that haven't been staged yet. Handy for
+    double-checking an edit before committing it.
+
+git add index.html
+    Stages the edited home page.
+
+git commit -m "Add intro line to home page"
+    Second commit, recording the change to index.html.
+
+git branch feature
+    Creates a new branch called "feature" pointing at the current commit.
+    It doesn't switch to it.
+
+git checkout feature
+    Switches to the feature branch, so new commits land there instead of
+    on main.
+
+git branch
+    Lists local branches. The one with * is the branch you're on.
+
+git add about.html
+    Stages the change to the about page (made on the feature branch).
+
+git commit -m "Add contact section to about page"
+    Commits the about page change to the feature branch only.
+
+git checkout main
+    Switches back to the main branch. The about page change disappears
+    from the working folder because main doesn't have it yet.
+
+git merge --no-ff feature -m "Merge branch feature into main"
+    Brings the feature branch's commits into main. --no-ff forces a merge
+    commit, so the history clearly shows the branch and where it joined.
+
+git log --oneline --graph --all
+    Shows every commit on all branches, one line each, with a text graph of
+    how the branches split and merged.
+
+git log --stat
+    Full commit history with author, date, message and which files changed
+    in each commit.
+
+
+STEP 3 - .gitignore
+-------------------
+
+echo "*.log" > .gitignore
+    (Shell) Creates .gitignore with a rule that ignores every .log file.
+
+echo "temp/" >> .gitignore
+    (Shell) Appends a second rule that ignores the whole temp folder.
+
+cat .gitignore
+    (Shell) Prints the file to check both rules are there.
+
+echo "debug output" > debug.log
+mkdir temp && echo "scratch notes" > temp/notes.txt
+    (Shell) Creates a log file and a file inside temp/, just to test that
+    Git really ignores them.
+
+ls -a
+    (Shell) Shows that debug.log and temp/ do exist in the folder.
+
+git status
+    Only .gitignore is listed as untracked. debug.log and temp/ don't
+    appear, so the rules are working.
+
+git check-ignore -v debug.log temp/notes.txt
+    Confirms that these files are being ignored and shows which line of
+    .gitignore is responsible for each one.
+
+git add .gitignore
+    Stages the .gitignore file.
+
+git commit -m "Add .gitignore for log files and temp folder"
+    Commits .gitignore so the ignore rules are part of the repository.
+
+
+STEP 4 - UNDO OPERATION
+-----------------------
+
+echo "<h1>Contact page</h1>" > contact.html
+    (Shell) Creates a new contact page for the extra commit.
+
+git add contact.html
+    Stages the new file.
+
+git commit -m "Add contact page"
+    The additional commit that gets undone in the next step.
+
+git log --oneline -3
+    Shows just the last 3 commits, to see the state before undoing.
+
+ls
+    (Shell) contact.html is present at this point.
+
+git revert HEAD --no-edit
+    Undoes the last commit by creating a new commit that reverses its
+    changes. contact.html is removed, but the history stays intact, which
+    is the safe way to undo something that is (or will be) pushed.
+    --no-edit just accepts the default "Revert ..." message.
+
+git log --oneline -4
+    Shows the history after the revert: the original commit and the
+    revert commit are both there.
+
+ls
+    (Shell) contact.html is gone from the folder.
+
+git status
+    Confirms the working tree is clean after the revert.
+
+git show --stat HEAD
+    Shows details of the latest commit (the revert), including which file
+    it removed.
+
+
+STEP 5 - GITHUB INTEGRATION
+---------------------------
+
+gh repo create git-workflow-assignment --public --description "Git and GitHub workflow assignment"
+    (GitHub CLI) Creates an empty public repository on my GitHub account.
+    The same thing can be done from the "New repository" button on
+    github.com.
+
+git remote add origin https://github.com/shivam24bcs10251-sys/git-workflow-assignment.git
+    Links the local repo to the GitHub repo and names that link "origin".
+
+git remote -v
+    Lists the remotes and their URLs, to confirm the link is right.
+
+git push -u origin main
+    Uploads the main branch and all its commits to GitHub. -u sets
+    origin/main as the upstream, so later a plain "git push" works.
+
+git push -u origin feature
+    Pushes the feature branch too, so the branch is visible on GitHub.
+
+git branch -a
+    Lists local and remote branches, confirming both are on GitHub.
+
+
+STEP 6 - ADDING THIS FILE
+-------------------------
+
+git add git_commands.txt
+    Stages this documentation file.
+
+git commit -m "Add git_commands.txt with all commands used"
+    Commits it to main.
+
+git push
+    Pushes the new commit to GitHub (the upstream was already set by -u).
+
+git log --oneline --graph --all
+    Final look at the full history, local and remote branches included.
